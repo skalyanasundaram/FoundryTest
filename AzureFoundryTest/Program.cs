@@ -1,17 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Azure.AI.OpenAI; // For chat completions client
+﻿using Azure.AI.OpenAI; // For chat completions client
 using OpenAI.Chat;
 using Azure; // Required for ApiKeyCredential if using API keys
 
-
 var endpoint = new Uri("https://firsttestkalyan-resource.cognitiveservices.azure.com/");
-var model = "gpt-5.2-chat";
 var deploymentName = "gpt-5.2-chat";
-var apiKey = "<REDACTED>";
+
+// Read API key from environment variable
+// Make sure to add launchsettings.json or set the variable in your OS environment
+//{
+//"profiles": {
+//    "FoundryTest": {
+//        "commandName": "Project",
+//      "environmentVariables": {
+//            "AZURE_OPENAI_API_KEY": "Key-Here",
+//        "ASPNETCORE_ENVIRONMENT": "Development"
+//      }
+//    }
+//  }
+//}
+var apiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
+if (string.IsNullOrWhiteSpace(apiKey))
+{
+    Console.WriteLine("Environment variable AZURE_OPENAI_API_KEY is not set. Set it and re-run.");
+    Console.WriteLine("Windows (PowerShell): $env:AZURE_OPENAI_API_KEY = \"<your-key>\"");
+    Console.WriteLine("Windows (cmd): set AZURE_OPENAI_API_KEY=<your-key>");
+    Console.WriteLine("Linux/macOS: export AZURE_OPENAI_API_KEY=<your-key>");
+    return;
+}
 
 AzureOpenAIClient azureClient = new(
     endpoint,
